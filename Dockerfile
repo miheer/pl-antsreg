@@ -1,14 +1,19 @@
-# Docker file for the antsreg plugin app
-
-FROM fnndsc/ubuntu-python3:latest
+FROM centos
 MAINTAINER fnndsc "dev@babymri.org"
 
-ENV APPROOT="/usr/src/antsreg"  VERSION="0.1"
-COPY ["antsreg", "${APPROOT}"]
-COPY ["requirements.txt", "${APPROOT}"]
+RUN yum install -y cmake git gcc gcc-c++ make zlib-devel  \
+ && export PATH=($PATH):/root/bin/ants/bin                \
+ && export ANTSPATH=/root/bin/ants/bin                    \
+ && mkdir ~/code                                          \
+ && cd ~/code                                             \
+ && git clone https://github.com/stnava/ANTs.git          \
+ && cd                                                    \
+ && mkdir bin                                             \
+ && cd bin                                                \
+ && mkdir ants                                            \
+ && cd ants                                               \
+ && cmake ~/code/ANTs                                     \
+ && make                                                  \
+ && cp ~/code/ANTs/Scripts/* ~/root/bin/ants/bin          \
 
-WORKDIR $APPROOT
-
-RUN pip install -r requirements.txt
-
-CMD ["antsreg.py", "--json"]
+CMD ["/init"]
