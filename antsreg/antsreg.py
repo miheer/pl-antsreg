@@ -9,6 +9,7 @@
 #
 
 import os
+import subprocess
 
 # import the Chris app superclass
 from chrisapp.base import ChrisApp
@@ -40,14 +41,27 @@ class AntsReg(ChrisApp):
         """
         Define the CLI arguments accepted by this plugin app.
         """
+    
+        self.add_argument('--command', dest='command', type=str, optional=False,
+                          help='ants shell command to be executed')
 
     def run(self, options):
         """
         Define the code to be run by this plugin app.
         """
+        
+        if options.command == None:
+            print("ERROR: No command supplied. --command argument required.")
+        else:
+            subprocess.run(options.command.split())
 
-
-# ENTRYPOINT
 if __name__ == "__main__":
     app = AntsReg()
     app.launch()
+
+
+
+
+
+
+
